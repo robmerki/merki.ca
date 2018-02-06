@@ -1,6 +1,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const path = require('path')
-
+const PurifyCSSPlugin = require('purifycss-webpack');
+const glob = require('glob');
 module.exports = {
   entry: './index.js',
   output: {
@@ -14,14 +15,23 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            { loader: 'css-loader', options: { importLoaders: 1 } },
-            'postcss-loader'
+
+            { loader: 'postcss-loader',
+              options: {
+            }
+          }          
           ]
         })
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin('styles.css')
+    new ExtractTextPlugin('styles.css'),
+    new PurifyCSSPlugin({
+      // Give paths to parse for rules. These should be absolute!
+      paths: glob.sync('*.html'),
+      verbose: true,
+      minimize: false
+    })
   ]
 }
